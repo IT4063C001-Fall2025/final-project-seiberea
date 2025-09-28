@@ -32,6 +32,7 @@ How to install dependencies on my own to help me import the data I found.
 
 #### What would you do differently next time?
 More research before starting the assignment.
+
 ---
 
 ## Getting Started
