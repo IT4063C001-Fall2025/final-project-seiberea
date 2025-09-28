@@ -12,19 +12,26 @@
 
 | Category          | Score    |
 | ----------------- | -------- |
-| **Setup**         | ... / 10 |
-| **Execution**     | ... / 20 |
-| **Documentation** | ... / 10 |
-| **Presentation**  | ... / 30 |
-| **Total**         | ... / 70 |
+| **Setup**         | 10 / 10 |
+| **Execution**     | 16 / 20 |
+| **Documentation** | 10 / 10 |
+| **Presentation**  | 28 / 30 |
+| **Total**         | 64 / 70 |
 
 ### Reflection
 <!-- Edit the following section with your reflection -->
 
 #### What went well?
+Importing the data I found to my project.
+
 #### What did not go well?
+Finding a good topic with datasets to go off of.
+
 #### What did you learn?
+How to install dependencies on my own to help me import the data I found.
+
 #### What would you do differently next time?
+More research before starting the assignment.
 
 ---
 
