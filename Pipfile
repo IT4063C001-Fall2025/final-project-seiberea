@@ -8,6 +8,9 @@ ipykernel = "*"
 jupyter = "*"
 notebook = "*"
 black = "*"
+opendatasets = "*"
+pandas = "*"
+kaggle = "*"
 
 [dev-packages]
 
