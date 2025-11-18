@@ -51,7 +51,7 @@
 # *How will you use the identified data to answer your project question?*
 # 📝 <!-- Start Discussing the project here; you can add as many code cells as you need -->
 
-# In[7]:
+# In[5]:
 
 
 import pandas as pd
@@ -79,7 +79,7 @@ od.download("https://www.kaggle.com/datasets/suchintikasarkar/sentiment-analysis
 # 
 # # Statisical Summaries
 
-# In[ ]:
+# In[6]:
 
 
 import pandas as pd
@@ -116,7 +116,7 @@ for col in rating_columns:
 
 # # Data Distributions
 
-# In[ ]:
+# In[7]:
 
 
 # Grouped by age and calculated the mean of Trouble_Sleeping_Rating
@@ -126,7 +126,7 @@ print(sleep_by_age)
 
 # # Feature Correlation
 
-# In[ ]:
+# In[8]:
 
 
 import pandas as pd
@@ -166,7 +166,7 @@ plt.show()
 
 # ## Data Visualizations
 
-# In[37]:
+# In[18]:
 
 
 # Histogram of Depression_Frequency_Rating grouped by Gender
@@ -174,7 +174,7 @@ plt.show()
 sns.histplot(data=filtered_df, x='Depression_Frequency_Rating', hue='Gender', kde=True, multiple='stack')
 
 
-# In[ ]:
+# In[17]:
 
 
 # Violin Plot of Depression_Frequency_Rating by Age Group and Gender
@@ -222,7 +222,110 @@ g.map(sns.histplot, 'Depression_Frequency_Rating', bins=5)
 
 # This project lends itself well to supervised learning, especially classification. With thoughtful preprocessing and evaluation, I can build a model that predicts depression risk based on behavioral patterns. An issue that may arise could be some features may be highly correlated, which could lead to multicollinearity in regression models. The biggest challenge will be balancing predictive power with ethical responsibility and interpretability. It is extremely important to do this when creating a model with information like this.
 
-# In[38]:
+# ## Checkpoint 3
+
+# ## Machine Learning Plan
+# 
+
+# *What type of machine learning model are you planning to use?*
+
+# I plan to use supervised learning, specifically classification models to predict whether a respondent is likely to report high depression frequency based on behavioral and demographic features. Potential algorithms include, logistic regression, decision trees, random forest, Support Vector Machines (SVM), and gradient goosting. If the depression rating is treated as a continuous variable, I may also explore regression models to predict exact scores.
+# 
+
+# *What are the challenges have you identified/are you anticipating in building your machine learning model?*
+
+# Some challenges I am anticipating are:
+# 
+# - Class imbalance: Depression ratings may cluster around moderate levels, making it harder to predict extreme cases.
+# - Feature redundancy: Some features (distraction and concentration ratings) may be highly correlated, which could affect model performance.
+# - Limited sample size: Certain age groups or genders may be underrepresented, reducing generalizability.
+# - Categorical complexity: Variables like platform usage or relationship status may require careful encoding to preserve nuance.
+# - Ethical sensitivity: Predicting mental health outcomes requires careful attention to fairness, bias, and interpretability.
+# 
+
+# *How are you planning to address these challenges?*
+
+# If these challenges do infact arise, I plan to address them by any of the following:
+# 
+# - Class imbalance: Use techniques like SMOTE (Synthetic Minority Over-sampling Technique) or class weighting.
+# - Feature selection: Apply correlation analysis and dimensionality reduction to reduce redundancy.
+# - Data augmentation: If needed, collect additional survey responses to balance underrepresented groups.
+# - Encoding strategies: Use one-hot encoding or ordinal encoding for categorical variables, depending on context.
+# - Model interpretability: Prioritize models that offer transparency and use tools like SHAP or feature importance plots.
+
+# # Machine Learning Implementation Process
+
+# # Ask
+
+# - Goal: Predict depression frequency based on behavioral and demographic features.
+# - Target variable: Depression_Frequency_Rating
+# - Features: Sleep issues, distraction ratings, comparison behavior, social media usage, age, gender, relationship status, platform usage
+
+# # Prepare & Process
+
+# - Explored distributions, central tendencies, and correlations
+# - Identified no missing values or data type issue
+
+# *Train-Test Split*
+
+# In[21]:
+
+
+from sklearn.model_selection import train_test_split
+
+
+feature_columns = [
+    'Age',
+    'Gender',
+    'Trouble_Sleeping_Rating',
+    'Frequency_Of_Comparing_Rating',
+    'Distraction_Rating',
+    'Social_Media_Validation_Rating',
+    'Easily_Distracted_Rating',
+    'Difficulty_Concentrating_Rating'
+]
+
+
+
+X = df[feature_columns]
+y = df['Depression_Frequency_Rating']
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+
+# *Data Cleaning with Pipelines*
+
+# In[19]:
+
+
+from sklearn.pipeline import Pipeline
+from sklearn.impute import SimpleImputer
+from sklearn.preprocessing import StandardScaler
+
+pipeline = Pipeline([
+    ('imputer', SimpleImputer(strategy='mean')),
+    ('scaler', StandardScaler())
+])
+
+
+# # Analyze and Evaluate
+
+# *Test multiple models*
+
+# In[20]:
+
+
+from sklearn.linear_model import LogisticRegression
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.svm import SVC
+
+models = {
+    'Logistic Regression': LogisticRegression(),
+    'Random Forest': RandomForestClassifier(),
+    'SVM': SVC()
+}
+
+
+# In[ ]:
 
 
 # ⚠️ Make sure you run this cell at the end of your notebook before every submission!
