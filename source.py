@@ -51,7 +51,7 @@
 # *How will you use the identified data to answer your project question?*
 # 📝 <!-- Start Discussing the project here; you can add as many code cells as you need -->
 
-# In[5]:
+# In[23]:
 
 
 import pandas as pd
@@ -79,7 +79,7 @@ od.download("https://www.kaggle.com/datasets/suchintikasarkar/sentiment-analysis
 # 
 # # Statisical Summaries
 
-# In[6]:
+# In[24]:
 
 
 import pandas as pd
@@ -116,7 +116,7 @@ for col in rating_columns:
 
 # # Data Distributions
 
-# In[7]:
+# In[25]:
 
 
 # Grouped by age and calculated the mean of Trouble_Sleeping_Rating
@@ -126,7 +126,7 @@ print(sleep_by_age)
 
 # # Feature Correlation
 
-# In[8]:
+# In[26]:
 
 
 import pandas as pd
@@ -166,7 +166,7 @@ plt.show()
 
 # ## Data Visualizations
 
-# In[18]:
+# In[27]:
 
 
 # Histogram of Depression_Frequency_Rating grouped by Gender
@@ -174,7 +174,7 @@ plt.show()
 sns.histplot(data=filtered_df, x='Depression_Frequency_Rating', hue='Gender', kde=True, multiple='stack')
 
 
-# In[17]:
+# In[28]:
 
 
 # Violin Plot of Depression_Frequency_Rating by Age Group and Gender
@@ -201,7 +201,7 @@ plt.tight_layout()
 plt.show()
 
 
-# In[ ]:
+# In[29]:
 
 
 # Facet Grid of Depression_Frequency_Rating by Gender
@@ -268,7 +268,7 @@ g.map(sns.histplot, 'Depression_Frequency_Rating', bins=5)
 
 # *Train-Test Split*
 
-# In[21]:
+# In[30]:
 
 
 from sklearn.model_selection import train_test_split
@@ -292,31 +292,89 @@ y = df['Depression_Frequency_Rating']
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
 
 
-# *Data Cleaning with Pipelines*
+# *Data Cleaning with Pipelines, Data imputation, Data Scaling and Normalization, and Handling of Categorical Data*
 
-# In[19]:
+# In[35]:
 
 
 from sklearn.pipeline import Pipeline
+from sklearn.compose import ColumnTransformer
 from sklearn.impute import SimpleImputer
-from sklearn.preprocessing import StandardScaler
+from sklearn.preprocessing import StandardScaler, OneHotEncoder
+from sklearn.linear_model import LogisticRegression
 
-pipeline = Pipeline([
+
+numeric_features = [
+    'Age',
+    'Trouble_Sleeping_Rating',
+    'Frequency_Of_Comparing_Rating',
+    'Distraction_Rating',
+    'Social_Media_Validation_Rating',
+    'Easily_Distracted_Rating',
+    'Difficulty_Concentrating_Rating',
+    'Trouble_Sleeping_Rating'
+]
+
+categorical_features = [
+    'Gender',
+    'Relationship_Status',
+    'Occupation_Status'
+]
+
+
+numeric_pipeline = Pipeline([
     ('imputer', SimpleImputer(strategy='mean')),
     ('scaler', StandardScaler())
 ])
 
 
-# # Analyze and Evaluate
+categorical_pipeline = Pipeline([
+    ('imputer', SimpleImputer(strategy='most_frequent')),
+    ('encoder', OneHotEncoder(handle_unknown='ignore'))
+])
+
+
+preprocessor = ColumnTransformer([
+    ('num', numeric_pipeline, numeric_features),
+    ('cat', categorical_pipeline, categorical_features)
+])
+
+
+model_pipeline = Pipeline([
+    ('preprocessing', preprocessor),
+    ('classifier', LogisticRegression())
+])
+
+
+# *Fit The Model*
+
+# In[ ]:
+
+
+model_pipeline.fit(X_train, y_train)
+
+
+# *Make Predictions*
+
+# In[ ]:
+
+
+y_pred = model_pipeline.predict(X_test)
+
+
+# # Analyze & Evaluate
 
 # *Test multiple models*
 
-# In[20]:
+# In[ ]:
 
 
 from sklearn.linear_model import LogisticRegression
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.svm import SVC
+from sklearn.pipeline import Pipeline
+from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score
+
 
 models = {
     'Logistic Regression': LogisticRegression(),
@@ -325,7 +383,33 @@ models = {
 }
 
 
-# In[ ]:
+model_pipelines = {
+    name: Pipeline([
+        ('preprocessing', preprocessor),
+        ('classifier', model)
+    ])
+    for name, model in models.items()
+}
+
+
+for name, pipeline in model_pipelines.items():
+    pipeline.fit(X_train, y_train)
+    y_pred = pipeline.predict(X_test)
+    
+    print(f"\n🔍 {name}")
+    print("Accuracy:", accuracy_score(y_test, y_pred))
+    print("Precision:", precision_score(y_test, y_pred, average='weighted'))
+    print("Recall:", recall_score(y_test, y_pred, average='weighted'))
+    print("F1 Score:", f1_score(y_test, y_pred, average='weighted'))
+
+
+# # Share
+
+# *What model I have selected and why?*
+
+# I chose Logistic Regression as the final model for this project because it offers a balance of interpretability, efficiency, and predictive performance. In the context of mental health data, where transparency and ethical accountability are essential, Logistic Regression allows me to clearly explain how each feature, such as trouble sleeping, comparison behavior, or distraction rating influences the likelihood of higher depression frequency. This interpretability makes it especially valuable when communicating findings to stakeholders, clinicians, or advocacy groups. The model is also well-suited for categorical or ordinal targets like depression frequency ratings, and it performs reliably when the relationship between predictors and the log-odds of the outcome is approximately linear. Logistic Regression is fast to train, resistant to overfitting when regularization is applied, and easy to tune, making it an ideal choice for a first deployment or baseline model. Even though more complex models like Random Forest or SVM may offer marginally higher accuracy, Logistic Regression serves as a trustworthy benchmark and often remains the preferred choice when clarity and speed are priorities. Overall, it aligns well with the structure of my data and the ethical goals of the project, allowing me to generate meaningful insights while maintaining model transparency.
+
+# In[33]:
 
 
 # ⚠️ Make sure you run this cell at the end of your notebook before every submission!
